@@ -30,7 +30,7 @@ uv pip install -e .
 
 ### Configure
 
-Set the following environment variables:
+Set the following environment variables (or create a `.env` file — see `.env.example`):
 
 | Variable | Required | Default | Description |
 |----------|---------|---------|-------------|
@@ -39,7 +39,14 @@ Set the following environment variables:
 | `COPYPARTY_WRITABLE_DIRS` | ❌ | `""` | Comma-separated directories the agent can write to |
 | `COPYPARTY_MAX_FILE_SIZE` | ❌ | `10485760` | Max readable file size in bytes (default 10 MB) |
 
-**Example:**
+**Option A: `.env` file (recommended)**
+
+```bash
+cp .env.example .env
+# Edit .env with your values
+```
+
+**Option B: Shell environment**
 
 ```bash
 export COPYPARTY_BASE_URL="https://files.example.com"

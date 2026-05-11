@@ -7,6 +7,9 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass, field
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 
 @dataclass(frozen=True)
@@ -57,9 +60,18 @@ def _normalize_path(path: str) -> str:
 def load_config() -> Config:
     """Build a :class:`Config` from the current environment.
 
+    A ``.env`` file in the current working directory (or next to this package)
+    will be loaded automatically if present.
+
     Raises:
         SystemExit: If ``COPYPARTY_BASE_URL`` is not set.
     """
+    # Load .env from CWD or from the project root (next to pyproject.toml)
+    env_path = Path.cwd() / ".env"
+    if not env_path.exists():
+        env_path = Path(__file__).resolve().parent.parent / ".env"
+    load_dotenv(env_path, override=False)
+
     base_url = os.environ.get("COPYPARTY_BASE_URL", "").rstrip("/")
     if not base_url:
         raise SystemExit(
