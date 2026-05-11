@@ -30,6 +30,7 @@ class CopypartyClient:
         self._http = httpx.AsyncClient(
             base_url=config.base_url,
             timeout=httpx.Timeout(30.0, connect=10.0),
+            follow_redirects=True,
         )
 
     # ------------------------------------------------------------------
