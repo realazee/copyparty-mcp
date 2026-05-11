@@ -27,10 +27,16 @@ class CopypartyClient:
 
     def __init__(self, config: Config) -> None:
         self._config = config
+        # Authenticate via the ``PW:`` header rather than ``?pw=`` URL params
+        # to avoid leaking credentials in error messages, logs, and proxy logs.
+        headers: dict[str, str] = {}
+        if config.password:
+            headers["PW"] = config.password
         self._http = httpx.AsyncClient(
             base_url=config.base_url,
             timeout=httpx.Timeout(30.0, connect=10.0),
             follow_redirects=True,
+            headers=headers,
         )
 
     # ------------------------------------------------------------------
@@ -38,10 +44,8 @@ class CopypartyClient:
     # ------------------------------------------------------------------
 
     def _auth_params(self, extra: dict[str, str] | None = None) -> dict[str, str]:
-        """Return query-string parameters including ``pw`` if configured."""
+        """Return query-string parameters for the request."""
         params: dict[str, str] = {}
-        if self._config.password:
-            params["pw"] = self._config.password
         if extra:
             params.update(extra)
         return params
