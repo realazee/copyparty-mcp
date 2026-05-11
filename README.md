@@ -35,6 +35,7 @@ Set the following environment variables (or create a `.env` file — see `.env.e
 | Variable | Required | Default | Description |
 |----------|---------|---------|-------------|
 | `COPYPARTY_BASE_URL` | ✅ | — | Base URL of your Copyparty server |
+| `COPYPARTY_USERNAME` | ❌ | `""` | Username (only if Copyparty uses `--usernames` mode) |
 | `COPYPARTY_PASSWORD` | ❌ | `""` | Password for authentication |
 | `COPYPARTY_WRITABLE_DIRS` | ❌ | `""` | Comma-separated directories the agent can write to |
 | `COPYPARTY_MAX_FILE_SIZE` | ❌ | `10485760` | Max readable file size in bytes (default 10 MB) |

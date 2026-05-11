@@ -29,9 +29,11 @@ class CopypartyClient:
         self._config = config
         # Authenticate via the ``PW:`` header rather than ``?pw=`` URL params
         # to avoid leaking credentials in error messages, logs, and proxy logs.
+        # Format: ``PW: password`` or ``PW: username:password`` depending on
+        # whether the server uses ``--usernames``.
         headers: dict[str, str] = {}
-        if config.password:
-            headers["PW"] = config.password
+        if config.auth_credential:
+            headers["PW"] = config.auth_credential
         self._http = httpx.AsyncClient(
             base_url=config.base_url,
             timeout=httpx.Timeout(30.0, connect=10.0),

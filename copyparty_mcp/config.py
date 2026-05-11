@@ -18,15 +18,32 @@ class Config:
 
     Attributes:
         base_url: Base URL of the Copyparty server (e.g. ``http://localhost:3923``).
+        username: Optional username for Copyparty authentication (requires
+            the server to be running with ``--usernames``).
         password: Optional password for Copyparty authentication.
         writable_dirs: Set of directory paths the agent is allowed to write to.
         max_file_size: Maximum file size in bytes the agent will read (default 10 MB).
     """
 
     base_url: str
+    username: str = ""
     password: str = ""
     writable_dirs: set[str] = field(default_factory=set)
     max_file_size: int = 10 * 1024 * 1024  # 10 MB
+
+    @property
+    def auth_credential(self) -> str:
+        """Build the credential string for the ``PW:`` header.
+
+        Returns ``username:password`` when a username is configured,
+        otherwise just ``password``.  Returns an empty string when no
+        password is set.
+        """
+        if not self.password:
+            return ""
+        if self.username:
+            return f"{self.username}:{self.password}"
+        return self.password
 
     # ------------------------------------------------------------------
     # Helpers
@@ -79,6 +96,7 @@ def load_config() -> Config:
             "Example: COPYPARTY_BASE_URL=http://localhost:3923"
         )
 
+    username = os.environ.get("COPYPARTY_USERNAME", "")
     password = os.environ.get("COPYPARTY_PASSWORD", "")
 
     raw_dirs = os.environ.get("COPYPARTY_WRITABLE_DIRS", "")
@@ -92,6 +110,7 @@ def load_config() -> Config:
 
     return Config(
         base_url=base_url,
+        username=username,
         password=password,
         writable_dirs=writable_dirs,
         max_file_size=max_file_size,
