@@ -325,7 +325,7 @@ async def upload_file(
     client = _get_client()
     try:
         result = await client.upload_file(directory, filename, raw)
-        return f"✅ Uploaded '{filename}' to {directory}\nServer response: {json.dumps(result)}"
+        return f"Uploaded '{filename}' to {directory}\nServer response: {json.dumps(result)}"
     except Exception as e:
         return f"Error uploading '{filename}' to '{directory}': {e}"
 
@@ -351,7 +351,7 @@ async def write_file(path: str, content: str) -> str:
     client = _get_client()
     try:
         result = await client.write_file(path, content.encode("utf-8"))
-        return f"✅ Wrote file at {path}\nServer response: {json.dumps(result)}"
+        return f"Wrote file at {path}\nServer response: {json.dumps(result)}"
     except Exception as e:
         return f"Error writing '{path}': {e}"
 
@@ -372,7 +372,7 @@ async def create_directory(path: str, name: str) -> str:
     client = _get_client()
     try:
         await client.mkdir(path, name)
-        return f"✅ Created directory '{name}' inside {path}"
+        return f"Created directory '{name}' inside {path}"
     except Exception as e:
         return f"Error creating directory '{name}' in '{path}': {e}"
 
@@ -395,9 +395,34 @@ async def delete_file(path: str) -> str:
     client = _get_client()
     try:
         await client.delete(path)
-        return f"✅ Deleted {path}"
+        return f"Deleted {path}"
     except Exception as e:
         return f"Error deleting '{path}': {e}"
+
+
+@mcp.tool()
+async def move_file(src: str, dst: str) -> str:
+    """Move or rename a file or folder on the Copyparty server.
+
+    Both the source and destination paths must be inside a writable directory
+    configured via COPYPARTY_WRITABLE_DIRS.
+
+    Args:
+        src: Source path of the file or folder to move (e.g. "/uploads/old.txt").
+        dst: Target path (e.g. "/uploads/new.txt").
+    """
+    try:
+        _assert_writable(src)
+        _assert_writable(dst)
+    except ValueError as e:
+        return str(e)
+
+    client = _get_client()
+    try:
+        await client.move(src, dst)
+        return f"Moved '{src}' to '{dst}'"
+    except Exception as e:
+        return f"Error moving '{src}' to '{dst}': {e}"
 
 
 # ---------------------------------------------------------------------------

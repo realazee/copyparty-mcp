@@ -146,6 +146,7 @@ All write operations require the target path to be inside a directory listed in 
 | `write_file` | Write or overwrite a text file |
 | `create_directory` | Create a new subdirectory |
 | `delete_file` | Delete a file or folder (recursive) |
+| `move_file` | Move or rename a file or folder |
 
 ## Security
 

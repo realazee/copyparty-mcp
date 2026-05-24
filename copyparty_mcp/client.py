@@ -186,6 +186,20 @@ class CopypartyClient:
         resp.raise_for_status()
         return True
 
+    async def move(self, src: str, dst: str) -> bool:
+        """Move or rename a file or folder from *src* to *dst*.
+
+        Uses ``POST /<src>?move=/<dst>``.
+        """
+        src = self._ensure_path(src)
+        dst = self._ensure_path(dst)
+        resp = await self._http.post(
+            src,
+            params=self._auth_params({"move": dst}),
+        )
+        resp.raise_for_status()
+        return True
+
     # ------------------------------------------------------------------
     # Lifecycle
     # ------------------------------------------------------------------
