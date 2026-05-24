@@ -1,6 +1,6 @@
 # copyparty-mcp
 
-An [MCP](https://modelcontextprotocol.io/) server that connects AI agents to a [Copyparty](https://github.com/9001/copyparty) file server — enabling directory browsing, file reading for RAG/knowledge, full-text search, and file uploads.
+An [MCP](https://modelcontextprotocol.io/) server that connects AI agents to a [Copyparty](https://github.com/9001/copyparty) file server — enabling directory browsing, file reading for RAG/knowledge, full-text search, and file uploads. Or just use your copyparty as a backend filesystem for your agent!
 
 ## Features
 
