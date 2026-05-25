@@ -11,6 +11,11 @@ dependencies = [
     "python-dotenv>=1.0.0",
 ]
 
+[project.optional-dependencies]
+impersonate = [
+    "httpx-curl-cffi>=0.3.0",
+]
+
 [project.scripts]
 copyparty-mcp = "copyparty_mcp.server:main"
 

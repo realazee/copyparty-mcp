@@ -26,6 +26,9 @@ pip install -e .
 
 # Or with uv
 uv pip install -e .
+
+# With TLS impersonation support (bypass WAF / firewall blocks)
+pip install -e ".[impersonate]"
 ```
 
 ### Configure
@@ -39,6 +42,7 @@ Set the following environment variables (or create a `.env` file — see `.env.e
 | `COPYPARTY_PASSWORD` | ❌ | `""` | Password for authentication |
 | `COPYPARTY_WRITABLE_DIRS` | ❌ | `""` | Comma-separated directories the agent can write to |
 | `COPYPARTY_MAX_FILE_SIZE` | ❌ | `10485760` | Max readable file size in bytes (default 10 MB) |
+| `COPYPARTY_IMPERSONATE` | ❌ | `""` | Browser to impersonate for TLS bypass (e.g. `chrome`, `firefox`, `safari`). Requires `[impersonate]` extra. |
 
 **Option A: `.env` file (recommended)**
 
@@ -147,6 +151,24 @@ All write operations require the target path to be inside a directory listed in 
 | `create_directory` | Create a new subdirectory |
 | `delete_file` | Delete a file or folder (recursive) |
 | `move_file` | Move or rename a file or folder |
+
+## TLS Impersonation
+
+If your Copyparty server sits behind a firewall, CDN, or reverse proxy that blocks non-browser HTTP clients (e.g. Cloudflare), standard `httpx` requests may fail with 403 errors due to TLS fingerprinting.
+
+The `[impersonate]` extra installs [`httpx-curl-cffi`](https://github.com/vgavro/httpx-curl-cffi), which uses native browser TLS libraries to impersonate a real browser's TLS/JA3 and HTTP/2 fingerprint.
+
+```bash
+# Install with impersonation support
+pip install -e ".[impersonate]"
+
+# Enable in your .env
+COPYPARTY_IMPERSONATE=chrome
+```
+
+Supported browser values include `chrome`, `firefox`, and `safari` (see [curl_cffi docs](https://curl-cffi.readthedocs.io/) for the full list).
+
+When `COPYPARTY_IMPERSONATE` is empty or unset, the default `httpx` transport is used.
 
 ## Security
 

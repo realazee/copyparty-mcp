@@ -30,6 +30,7 @@ class Config:
     password: str = ""
     writable_dirs: set[str] = field(default_factory=set)
     max_file_size: int = 10 * 1024 * 1024  # 10 MB
+    impersonate: str = ""  # Browser to impersonate (e.g. "chrome"), empty = disabled
 
     @property
     def auth_credential(self) -> str:
@@ -108,10 +109,13 @@ def load_config() -> Config:
         os.environ.get("COPYPARTY_MAX_FILE_SIZE", str(10 * 1024 * 1024))
     )
 
+    impersonate = os.environ.get("COPYPARTY_IMPERSONATE", "").strip()
+
     return Config(
         base_url=base_url,
         username=username,
         password=password,
         writable_dirs=writable_dirs,
         max_file_size=max_file_size,
+        impersonate=impersonate,
     )

@@ -34,11 +34,38 @@ class CopypartyClient:
         headers: dict[str, str] = {}
         if config.auth_credential:
             headers["PW"] = config.auth_credential
+
+        # When impersonation is configured, use curl-cffi transport to bypass
+        # TLS fingerprinting / WAF blocks.
+        transport = None
+        if config.impersonate:
+            try:
+                from httpx_curl_cffi import AsyncCurlTransport, CurlOpt
+
+                transport = AsyncCurlTransport(
+                    impersonate=config.impersonate,
+                    default_headers=True,
+                    # Required for parallel async requests
+                    curl_options={CurlOpt.FRESH_CONNECT: True},
+                )
+                logger.info(
+                    "Using curl-cffi transport (impersonating %s)",
+                    config.impersonate,
+                )
+            except ImportError:
+                logger.warning(
+                    "COPYPARTY_IMPERSONATE is set to '%s' but httpx-curl-cffi "
+                    "is not installed. Install with: pip install copyparty-mcp[impersonate]  "
+                    "Falling back to default httpx transport.",
+                    config.impersonate,
+                )
+
         self._http = httpx.AsyncClient(
             base_url=config.base_url,
             timeout=httpx.Timeout(30.0, connect=10.0),
             follow_redirects=True,
             headers=headers,
+            transport=transport,
         )
 
     # ------------------------------------------------------------------
